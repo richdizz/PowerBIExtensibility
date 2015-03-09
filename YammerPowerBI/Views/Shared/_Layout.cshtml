@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Yammer Group Explorer</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <link rel="stylesheet" type="text/css" href="~/Content/app.css" />
+</head>
+<body>    
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h1 class="headerSM hidden-xs"><img src="~/Images/YGE_64.png" />&nbsp;Yammer Group Explorer</h1>
+                <h1 class="headerXS visible-xs"><img src="~/Images/YGE_32.png" />&nbsp;Yammer Group Explorer</h1>
+            </div>
+        </div>
+        <div class="alert alert-danger" role="alert" style="margin-top: 10px; display: none;" id="alert"></div>
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - Yammer Group Explorer</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

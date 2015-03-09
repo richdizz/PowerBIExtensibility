@@ -1,0 +1,100 @@
+﻿
+@{
+    ViewBag.Title = "Tester";
+}
+
+<h2>Tester</h2>
+<button id="btnGet" class="btn btn-primary">Get Datasets</button>
+<button id="btnCreate" class="btn btn-primary">Create Dataset</button>
+<button id="btnAdd" class="btn btn-primary">Add Rows</button>
+<button id="btnClear" class="btn btn-primary">Clear Rows</button>
+<button id="btnDelete" class="btn btn-primary">Delete Dataset</button>
+
+
+@section Scripts {
+    <script type="text/javascript">
+        var dsID;
+        $(document).ready(function () {
+            $("#btnGet").click(function () {
+                $.ajax({
+                    url: "/api/PowerBI/GetDatasets",
+                    type: "GET",
+                    success: function (data) {
+                        alert("GOOD");
+                    },
+                    error: function (er) {
+                        alert("BAD");
+                    }
+                });
+            });
+
+            $("#btnCreate").click(function () {
+                var data = { name: "TestDataset", tables: [{ name: "TestTable", columns: [{ name: "Id", dataType: "Int64" }, { name: "Description", dataType: "string" }, { name: "Created", dataType: "DateTime" }] }] };
+                $.ajax({
+                    url: "/api/PowerBI/CreateDataset",
+                    type: "POST",
+                    data: JSON.stringify(data),
+                    contentType: "application/json",
+                    success: function (data) {
+                        dsID = data;
+                    },
+                    error: function (er) {
+                        alert("BAD");
+                    }
+                });
+            });
+
+            $("#btnAdd").click(function () {
+                var data = { datasetId: dsID, tableName: "TestTable", rows: [{ "Id": 1, "Description": "Richard", "Created": "1/1/2015" }, { "Id": 1, "Description": "Richard", "Created": "1/1/2015" }] };
+                $.ajax({
+                    url: "/api/PowerBI/AddTableRows",
+                    type: "POST",
+                    data: JSON.stringify(data),
+                    contentType: "application/json",
+                    success: function (data) {
+                        alert("GOOD");
+                    },
+                    error: function (er) {
+                        alert("BAD");
+                    }
+                });
+            });
+
+            $("#btnClear").click(function () {
+                var data = { datasetId: dsID, tableName: "TestTable"};
+                $.ajax({
+                    url: "/api/PowerBI/ClearTable",
+                    type: "POST",
+                    data: JSON.stringify(data),
+                    contentType: "application/json",
+                    success: function (data) {
+                        alert("GOOD");
+                    },
+                    error: function (er) {
+                        alert("BAD");
+                    }
+                });
+            });
+
+            $("#btnDelete").click(function () {
+                //DELETE IS UNSUPPORTED
+                $.ajax({
+                    url: "/api/PowerBI/DeleteDataset/" + dsID,
+                    type: "DELETE",
+                    contentType: "application/json",
+                    statusCode: {
+                        200: function (data) {
+                            alert("GOOD!!!!");
+                        }, // Successful DELETE
+                        404: function (data) {
+                            alert("Not Found");
+                        }, // 404 Not Found
+                        400: function (data) {
+                            alert("Bad Request");
+                        } // 400 Bad Request
+                    }
+                });
+            });
+        });
+</script>
+}

@@ -1,0 +1,151 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="row">
+    <div class="col-md-3 col-sm-4">
+        <div class="list-group">
+            <a href="#" class="list-group-item active" id="step1"><span class="badge">1</span>&nbsp;Authorize</a>
+            <a href="#" class="list-group-item" id="step2"><span class="badge">2</span>&nbsp;Configure Export</a>
+            <a href="#" class="list-group-item" id="step3"><span class="badge">3</span>&nbsp;Configure Dataset</a>
+            <a href="#" class="list-group-item" id="step4"><span class="badge">4</span>&nbsp;Process</a>
+            <a href="#" class="list-group-item" id="step5"><span class="badge">5</span>&nbsp;Explore in Power BI</a>
+        </div>
+    </div>
+    <div class="col-md-9 col-sm-8">
+        <div id="rowAuthorize">
+            <p>Please use the "Authorize" button to allow Yammer Group Explorer to query Yammer data based on the criteria you specify (group and date range). Rest assured that Yammer Group Explorer performs 100% of the processing on your local computer and is 100% stateless (geek translated: no data goes through a 3rd party and absolutely nothing stored in the app...not even a cookie).</p>
+            <button id="btnAuthorize" class="btn btn-block btn-primary">Authorize</button>
+        </div>
+
+        <div id="rowConfigExport" style="display: none;">
+            <p>We need some additional parameters to pull the right data into Power BI. Please select a Yammer network, group, and date range.</p>
+            <div class="form-group">
+                <label for="cboNetwork">Network:</label>
+                <select id="cboNetwork" class="form-control"></select>
+            </div>
+            <div class="form-group">
+                <label for="cboGroup">Group:</label>
+                <select id="cboGroup" class="form-control" disabled></select>
+            </div>
+            <div class="form-group" style="padding-bottom: 5px;">
+                <label for="txtDateRange">From Date:</label>
+                <input type="datetime" id="txtDateRange" class="form-control" disabled />
+            </div>
+            <div class="form-group">
+                <button id="btnConfigExport" class="btn btn-block btn-primary" disabled>Next</button>
+            </div>
+        </div>
+
+        <div id="rowConfigDataset" style="display: none;">
+            <p>Now we need some information on how the Yammer data gets stored in Power BI. Don't worry, we'll build the model for you. We just need to know if we are updating an existing dataset or creating a new dataset.</p>
+            <div class="form-group">
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="dsRadios" id="dsNew" value="dsNew" checked>
+                        Create <b>NEW</b> dataset in Power BI
+                    </label>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="dsRadios" id="dsExisting" value="dsExisting">
+                        Use <b>EXISTING</b> dataset in Power BI
+                    </label>
+                </div>
+            </div>
+            <div id="rowtxtDataset" class="form-group">
+                <label for="txtDataset">Dataset:</label>
+                <input id="txtDataset" class="form-control" placeholder="Please enter a name for dataset" />
+            </div>
+            <div id="rowCboDataset" class="form-group" style="display: none;">
+                <label for="cboDataset">Dataset:</label>
+                <select id="cboDataset" class="form-control"></select>
+            </div>
+            <div id="rowResetAppend" class="form-group" style="display: none;">
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="dsResetAppend" id="dsReset" value="dsReset" checked>
+                        Clear existing data in dataset before loading new data
+                    </label>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="dsResetAppend" id="dsAppend" value="dsAppend">
+                        Preserve existing data in dataset by appending new data
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <button id="btnConfigDataset" class="btn btn-block btn-primary" disabled>Next</button>
+            </div>
+        </div>
+
+        <div id="rowProcess" style="display: none;">
+            <p>We are ready to start processing Yammer group data into Power BI for analysis. Please review the details below and start the process. Please note that Yammer throttles the rate at which we can query data (about a message a second). Active groups or wide date ranges could take time to complete.</p>
+            <dl class="dl-horizontal">
+                <dt>Network:</dt>
+                <dd id="ddNetwork"></dd>
+            </dl>
+            <dl class="dl-horizontal">
+                <dt>Group:</dt>
+                <dd id="ddGroup"></dd>
+            </dl>
+            <dl class="dl-horizontal">
+                <dt>From Date:</dt>
+                <dd id="ddFromDate"></dd>
+            </dl>
+            <dl class="dl-horizontal">
+                <dt>Dataset Type:</dt>
+                <dd id="ddDatasetType">Create New</dd>
+            </dl>
+            <dl class="dl-horizontal">
+                <dt>Dataset Name:</dt>
+                <dd id="ddDatasetName"></dd>
+            </dl>
+            <dl class="dl-horizontal" id="confirmClearAppend">
+                <dt>Clear/Append Dataset:</dt>
+                <dd id="ddClearAppend">Clear</dd>
+            </dl>
+            <div class="form-group">
+                <button id="btnProcess" class="btn btn-block btn-primary">Start Processing</button>
+            </div>
+        </div>
+
+        <div id="rowPowerBI" style="display: none;">
+            <p>We have completed building the Yammer Group Dataset in Power BI. You can explore the dataset at the url below:</p>
+            <a href="https://app.powerbi.com/">https://app.powerbi.com/</a>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="authorizeModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content" style="padding: 10px;">
+            <h4><img alt="Working on it" src="data:image/gif;base64,R0lGODlhEAAQAIAAAFLOQv///yH/C05FVFNDQVBFMi4wAwEAAAAh+QQFCgABACwJAAIAAgACAAACAoRRACH5BAUKAAEALAwABQACAAIAAAIChFEAIfkEBQoAAQAsDAAJAAIAAgAAAgKEUQAh+QQFCgABACwJAAwAAgACAAACAoRRACH5BAUKAAEALAUADAACAAIAAAIChFEAIfkEBQoAAQAsAgAJAAIAAgAAAgKEUQAh+QQFCgABACwCAAUAAgACAAACAoRRACH5BAkKAAEALAIAAgAMAAwAAAINjAFne8kPo5y02ouzLQAh+QQJCgABACwCAAIADAAMAAACF4wBphvID1uCyNEZM7Ov4v1p0hGOZlAAACH5BAkKAAEALAIAAgAMAAwAAAIUjAGmG8gPW4qS2rscRPp1rH3H1BUAIfkECQoAAQAsAgACAAkADAAAAhGMAaaX64peiLJa6rCVFHdQAAAh+QQJCgABACwCAAIABQAMAAACDYwBFqiX3mJjUM63QAEAIfkECQoAAQAsAgACAAUACQAAAgqMARaol95iY9AUACH5BAkKAAEALAIAAgAFAAUAAAIHjAEWqJeuCgAh+QQJCgABACwFAAIAAgACAAACAoRRADs=" style="width: 32px; height: 32px;" />&nbsp;Pending Authorization...</h4>
+            <p>This dialog will automatically close once the authorization process has completed in the Yammer popup window. If you did not get a popup window you should refresh or reload the app.</p>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="processModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content" style="padding: 10px;">
+            <h4><img alt="Working on it" src="data:image/gif;base64,R0lGODlhEAAQAIAAAFLOQv///yH/C05FVFNDQVBFMi4wAwEAAAAh+QQFCgABACwJAAIAAgACAAACAoRRACH5BAUKAAEALAwABQACAAIAAAIChFEAIfkEBQoAAQAsDAAJAAIAAgAAAgKEUQAh+QQFCgABACwJAAwAAgACAAACAoRRACH5BAUKAAEALAUADAACAAIAAAIChFEAIfkEBQoAAQAsAgAJAAIAAgAAAgKEUQAh+QQFCgABACwCAAUAAgACAAACAoRRACH5BAkKAAEALAIAAgAMAAwAAAINjAFne8kPo5y02ouzLQAh+QQJCgABACwCAAIADAAMAAACF4wBphvID1uCyNEZM7Ov4v1p0hGOZlAAACH5BAkKAAEALAIAAgAMAAwAAAIUjAGmG8gPW4qS2rscRPp1rH3H1BUAIfkECQoAAQAsAgACAAkADAAAAhGMAaaX64peiLJa6rCVFHdQAAAh+QQJCgABACwCAAIABQAMAAACDYwBFqiX3mJjUM63QAEAIfkECQoAAQAsAgACAAUACQAAAgqMARaol95iY9AUACH5BAkKAAEALAIAAgAFAAUAAAIHjAEWqJeuCgAh+QQJCgABACwFAAIAAgACAAACAoRRADs=" style="width: 32px; height: 32px;" />&nbsp;Processing Yammer Group...</h4>
+            <p>Greatness awaits! We are in the process of building a Power BI dataset and loading that with statistics from the Yammer parameters you selected. You can follow progress below.</p>
+            <dl class="dl-horizontal">
+                <dt>Status:</dt>
+                <dd id="procStatus"></dd>
+            </dl>
+            <dl class="dl-horizontal">
+                <dt>Messages Processed:</dt>
+                <dd id="procProcessed"></dd>
+            </dl>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript" data-app-id="Q8dFba5ypUVw3G7sIpbg" src="https://assets.yammer.com/assets/platform_js_sdk.js"></script>
+    <script src="~/Scripts/jquery.signalR-2.1.2.min.js"></script>
+    <script src="~/Scripts/jquery-ui-1.11.2.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script src="~/Scripts/index.js"></script>
+}
